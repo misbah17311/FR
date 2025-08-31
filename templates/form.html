@@ -18,6 +18,13 @@
             <label for="timeline_days">Deadline (in days)</label>
             <input type="number" id="timeline_days" name="timeline_days" required>
 
+            <label for="organization_filter">Organization Preference</label>
+            <select id="organization_filter" name="organization_filter">
+                <option value="all">All (Individuals & Organizations)</option>
+                <option value="individual">Independent Freelancers Only</option>
+                <option value="company">Company-based Freelancers Only</option>
+            </select>
+
             <button type="submit">Get Recommendations</button>
         </form>
     </div>

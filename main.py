@@ -27,6 +27,14 @@ for freelancer in freelancers:
     #availability
     if "availability_till_next" not in freelancer and "availability_in_days" in freelancer:
         freelancer["availability_till_next"] = freelancer["availability_in_days"]
+    
+    # organization fields for backward compatibility
+    if "organization" not in freelancer:
+        freelancer["organization"] = "Independent Freelancer"
+    if "organization_type" not in freelancer:
+        freelancer["organization_type"] = "Individual"
+    if "organization_size" not in freelancer:
+        freelancer["organization_size"] = "Solo"
 
 # Combine text fields for TF-IDF matching
 def profile_to_text(profile):
@@ -64,15 +72,24 @@ def form_ui(request: Request):
 def recommend_ui(request: Request,
                  description: str = Form(...),
                  budget_in_dollars: int = Form(...),
-                 timeline_days: int = Form(...)):
+                 timeline_days: int = Form(...),
+                 organization_filter: str = Form("all")):
 
     job_vector = vectorizer.transform([description])
     similarities = cosine_similarity(job_vector, freelancer_vectors).flatten()
 
     filtered = []
     for i, freelancer in enumerate(freelancers):
+        # Check budget and timeline constraints
         if freelancer.get("expected_rate_hourly", 0) <= budget_in_dollars and freelancer.get("availability_in_days", 0) <= timeline_days:
-            filtered.append((i, similarities[i]))
+            # Check organization filter
+            organization_type = freelancer.get("organization_type", "Individual")
+            if organization_filter == "all":
+                filtered.append((i, similarities[i]))
+            elif organization_filter == "individual" and organization_type == "Individual":
+                filtered.append((i, similarities[i]))
+            elif organization_filter == "company" and organization_type == "Company":
+                filtered.append((i, similarities[i]))
 
     #Sort by similarity
     filtered.sort(key=lambda x: x[1], reverse=True)
