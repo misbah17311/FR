@@ -109,7 +109,10 @@
     "experience_years": 6,
     "expected_rate": "27 $",
     "availability_in_days": 9,
-    "rating": 1.3
+    "rating": 1.3,
+    "organization": "AI Innovations Corp",
+    "organization_type": "Company", 
+    "organization_size": "Large (200+ employees)"
   },
   {
     "serial_no": 6,
